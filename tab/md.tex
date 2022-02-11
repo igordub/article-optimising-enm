@@ -1,0 +1,18 @@
+\begin{table}[H]
+\centering
+\caption{MD simulation parameters. Truncated octahedron PBC unit box size; number of water molecules: ions to neutralize protein's charge (water molecules were replaced by added ions); and system's equilibration, production times with the time slice (form the end of production) used for PCA.}
+\label{tab:md}
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{rcccc}
+\toprule
+Protein & \multicolumn{1}{c}{Unit Box (\SI{}{\AA{}})} & Water (\#) & Ions & Eq $|$ Prod $|$ PCA (\SI{}{ns}) \\ \hline
+CAP &
+  \multirow{3}{*}{\begin{tabular}[r]{@{}c@{}}$18.87\times 18.48 \times 19.00$\end{tabular}} &
+  11,965 &
+  $\text{Cl}^{-}$ &
+  100 $|$ 300 $|$ 50 \\
+GST                                     &  & 10,381 & $\text{8}\times\text{Na}^{+}$ & 100 $|$ 300 $|$ 50  \\
+M\textsuperscript{pro} &  & 17,858 & $\text{8}\times\text{Na}^{+}$ & 200 $|$ 300 $|$ 150 \\ \bottomrule
+\end{tabular}%
+}
+\end{table}
