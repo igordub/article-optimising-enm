@@ -1,0 +1,34 @@
+# Python packges for compuational biophysics Conda environment
+#
+# To install the enviroment to Conda type:
+# conda env create -f ccenv.yml
+
+name: comp-biophys1
+
+channels:
+  - defaults
+  - conda-forge
+  - schrodinger
+  - ambermd
+
+dependencies:
+  - python
+  # Analysis
+  - numpy
+  - pandas
+  - biopandas
+  # Plotting
+  - matplotlib
+  - seaborn
+  - scipy
+  # Packages and formatting
+  - pip
+  - pep8
+  - autopep8
+  - python-dotenv
+  - yaml
+  - pyyaml
+  # PDB and AMBER
+  - pymol
+  - ambertools
+  - pytraj
