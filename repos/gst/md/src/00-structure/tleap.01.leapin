@@ -1,0 +1,21 @@
+# Combine protein and ligand into a complex
+# 
+# Usage: tleap -s -f src/00-structure/tleap.01.leapin
+
+source leaprc.protein.ff19SB
+source leaprc.gaff2
+
+PRO = loadpdb pdb/02-processed/protein.pdb
+
+LIG_A = loadmol2 antechamber/ligand.chain_01.mol2
+loadamberparams antechamber/ligand.chain_01.frcmod
+
+LIG_B = loadmol2 antechamber/ligand.chain_02.mol2
+loadamberparams antechamber/ligand.chain_02.frcmod
+
+COM = combine{PRO LIG_A LIG_B}
+
+saveamberparm COM tmp/test.parm7 tmp/test.ncrst
+savepdb COM tmp/test.pdb
+
+quit
