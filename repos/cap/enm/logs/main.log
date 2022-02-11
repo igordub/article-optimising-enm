@@ -1,0 +1,41 @@
+PDB info extracted!
+Distance cutoff scan value extraction complete!
+BENMs scan eigenvalue extraction complete!
+Distance cutoff of 5.0 A has a floppy mode.
+Distance cutoff of 5.5 A has a floppy mode.
+Distance cutoff of 6.0 A has a floppy mode.
+Distance cutoff of 6.5 A has a floppy mode.
+Distance cutoff of 7.0 A has a floppy mode.
+Form index: 0
+Scaled spring constants [kcal/mol/A^2]
+7.5    56.11
+8.0    31.10
+8.5    18.13
+9.0    11.50
+9.5     6.86
+10.0    4.46
+10.5    3.10
+11.0    1.81
+11.5    1.16
+12.0    0.87
+12.5    0.60
+13.0    0.38
+13.5    0.30
+14.0    0.23
+14.5    0.19
+15.0    0.15
+Name: 1, dtype: float64
+Form index: 0
+Scaled spring constants [kcal/mol/A^2]
+1.0     31.10
+10.0    24.60
+20.0    24.04
+30.0    23.84
+40.0    23.74
+50.0    23.68
+100.0   23.56
+150.0   23.52
+200.0   23.50
+250.0   23.49
+300.0   23.48
+Name: 1, dtype: float64

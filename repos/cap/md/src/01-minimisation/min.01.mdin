@@ -1,0 +1,15 @@
+CAP_2cAMP: initial minimisation solvent + ions
+&cntrl
+    imin   = 1,
+    maxcyc = 10000,
+    ncyc   = 5000,
+    ntb    = 1,
+    ntr    = 1,
+    ntwx = 100,
+    cut    = 10.0
+/
+Hold protein fixed
+500.0
+RES 1 403
+END
+END

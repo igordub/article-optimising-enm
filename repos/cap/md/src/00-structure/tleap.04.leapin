@@ -1,0 +1,28 @@
+# Configure protein/ligand complex for MD simulation
+#
+# Usage: tleap -sf src/00-structure/tleap.04.leapin
+
+source leaprc.protein.ff19SB
+source leaprc.gaff2
+source leaprc.water.opc 
+
+PRO = loadpdb pdb/02-processed/protein.pdb
+
+LIG_A = loadmol2 antechamber/ligand.chainA.mol2
+loadamberparams antechamber/ligand.chainA.frcmod
+
+LIG_B = loadmol2 antechamber/ligand.chainB.mol2
+loadamberparams antechamber/ligand.chainB.frcmod
+
+COM = combine{PRO LIG_A LIG_B}
+
+solvateoct COM OPCBOX 10
+
+charge COM
+addions COM Na+ 2 # Add ions to neutralize sytems's charge
+charge COM
+
+saveamberparm COM data/00-structure/complex.parm7 data/00-structure/complex.ncrst
+savepdb COM data/00-structure/complex.pdb
+
+quit

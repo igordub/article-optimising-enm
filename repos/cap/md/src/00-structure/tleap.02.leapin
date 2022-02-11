@@ -1,0 +1,24 @@
+# Solvate protein/ligand complex
+# 
+# Usage: tleap -s -f src/00-structure/tleap.02.leapin
+
+source leaprc.protein.ff19SB
+source leaprc.gaff2
+source leaprc.water.opc
+
+PRO = loadpdb pdb/02-processed/protein.pdb
+
+LIG_A = loadmol2 antechamber/ligand.chainA.mol2
+loadamberparams antechamber/ligand.chainA.frcmod
+
+LIG_B = loadmol2 antechamber/ligand.chainB.mol2
+loadamberparams antechamber/ligand.chainB.frcmod
+
+COM = combine{PRO LIG_A LIG_B}
+
+solvateOct COM TIP3PBOX 8
+
+saveamberparm COM tmp/test.parm7 tmp/test.ncrst
+savepdb COM tmp/test.pdb
+
+quit
