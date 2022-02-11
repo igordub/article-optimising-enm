@@ -1,0 +1,26 @@
+GST_2GTX: heat equilibration
+&cntrl
+    imin=0, 
+    irest=0,
+    nstlim=100000, 
+    dt=0.002,
+    ntc=2, 
+    ntf=2,
+    cut=10.0, 
+    ntb=1,
+    ntpr=500, 
+    ntwx=5000,
+    ntt=3, 
+    gamma_ln=1.0,
+    ntx=1, 
+    ig=-1,
+    tempi=0.0, 
+    temp0=300.0,
+    ntr=1, 
+    ioutfm=1
+/
+Keep complex fixed with weak restraints
+2.5
+RES 1 434
+END
+END
