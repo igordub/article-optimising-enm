@@ -1,0 +1,94 @@
+# File paths
+- data:
+    cap: data/cap/
+    gst: data/gst/
+    mpro: data/mpro/
+    outPathScratch: scratch/
+
+- viz:
+    default:
+      xtick.color: "323034"
+      ytick.color: "323034"
+      text.color: "323034"
+      lines.markeredgecolor: black
+      patch.facecolor: bc80bd
+      figure.figsize: 4.8,3
+      patch.force_edgecolor: True
+      patch.linewidth: 0.8
+      scatter.edgecolors: black
+      grid.color: b1afb5
+      axes.titlesize: 14
+      legend.title_fontsize: 12
+      xtick.labelsize: 12
+      ytick.labelsize: 12
+      axes.labelsize: 12
+      font.size: 10
+      axes.prop_cycle: (cycler('color', ['bc80bd' ,'fb8072', 'b3de69','fdb462','fccde5','8dd3c7','ffed6f','bebada','80b1d3', 'ccebc5', 'd9d9d9']))
+      mathtext.fontset: stix
+      font.family: STIXGeneral
+      lines.linewidth: 2
+      legend.frameon: False
+      legend.framealpha: 0.8
+      legend.fontsize: 10
+      legend.edgecolor: "0.9"
+      legend.borderpad: 0.2
+      legend.columnspacing: 1.0
+      legend.labelspacing: 0.2
+      text.usetex: False
+      axes.titlelocation: right
+      axes.formatter.use_mathtext: True
+      axes.autolimit_mode: data
+      axes.labelpad: 3
+      axes.formatter.limits: -4, 4
+      axes.labelcolor: black
+      axes.edgecolor: black
+      axes.linewidth: 0.6
+      axes.xmargin: 0.05
+      axes.ymargin: 0.05
+      axes.spines.right: False
+      axes.spines.top: False
+      axes.grid: False
+      figure.titlesize: 14
+      figure.dpi: 300
+    # rcParameter values are taken from:
+    # http://aeturrell.com/2018/01/31/publication-quality-plots-in-python/
+
+    jupyter:
+      xtick.labelsize: 10
+      ytick.labelsize: 10
+      font.size: 10
+      figure.autolayout: False
+      figure.figsize: 6,3
+      figure.dpi: 300
+      axes.titlesize: 11
+      axes.labelsize: 10
+      lines.linewidth: 1
+      lines.markersize: 3
+      legend.fontsize: 8
+      mathtext.fontset: stix
+      font.family: STIXGeneral
+      legend.frameon: False
+
+# Nature standard figure width size
+# Single column:    89 mm   (3.50 in)
+# Double column:    183 mm  (7.20 in)
+# Full depth:       247 mm  (9.72 in)
+# PNAS standard figure width size
+# Small:            87 mm   (3.42 in)
+# Medium:           114 mm  (7.20 in)
+# Large:            178 mm  (7.00 in)
+- colors:
+    black: 0,0,0
+    orange: 230,159,0
+    sky_blue: 86,180,233
+    bluish_green: 0,158,115
+    yellow: 240,228,66
+    blue: 0,114,178
+    vermillion: 213,94,0
+    reddish_purple: 204,121,167
+  # Convert to hex
+  # "#{:02x}{:02x}{:02x}".format(0, 128, 64)
+  # "#008040"
+  #
+  # Reference
+  # Wong, B., 2011. Points of view: Color blindness.
