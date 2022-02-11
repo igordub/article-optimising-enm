@@ -1,6 +1,7 @@
 # Optimising Elastic Network Models for Protein Dynamics and Allostery: Spatial and Modal Cut-offs and Backbone Stiffness
-Processed data and sripts for a research article "Optimising Elastic Network Models for Protein Dynamics and Allostery: Spatial and Modal Cut-offs and Backbone Stiffness".
+
 **Authors**: [Igors Dubanevics](https://github.com/igordub) and [Tom C. B. McLeish](https://www.york.ac.uk/physics/people/mcleish/)
+
 # Repository structure
 ```
 ├── README.md           <- The top-level README for this project.
