@@ -360,14 +360,8 @@ def plot_allo(kd_1, kd_2, coop, output_dir, data_label='tmp', modes_plot=25, ttl
 
     ################# K2/K1 #################
     data = coop
-    for m in [modes_plot, 200, 500, 750, 800, total_modes]:
-        if m > 100:
-            fig, ax = scatter_df(data, modes_plot=m)
-        else:
-            if len(data.columns) < 10:
-                fig, ax = scatter_df(data, modes_plot=m)
-            else:
-                fig, ax = lineplot_df(data, modes_plot=m)
+    for m in [modes_plot, 100, 200, 500, 750, 800, total_modes]:
+        fig, ax = lineplot_df(data, modes_plot=m)
 
         # Non-cooperative value
         ax.axhline(y=1.0,
@@ -579,6 +573,6 @@ def main(dist_cutoff, protein_name):
 
 
 if __name__ == "__main__":
-    dist_cutoff = 8.0 
-    protein_name = "Mpro"
+    dist_cutoff = 8.5 
+    protein_name = "GST"
     main(dist_cutoff, protein_name)

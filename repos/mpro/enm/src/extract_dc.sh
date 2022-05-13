@@ -13,7 +13,7 @@ mkdir -p ${OUTPUT_DIR}
 BFACTOR_CORR_FILE="${OUTPUT_DIR}/bfactor_corr.csv"
 echo "form_idx,dist_cutoff,bfactor_corr" > ${BFACTOR_CORR_FILE}
 
-for CUTOFF in $(seq 5.0 0.5 15.0)
+for CUTOFF in $(seq 7.5 0.5 12.0)
 do
     printf -v CUTOFF_PAD "%05.2f" ${CUTOFF}
 

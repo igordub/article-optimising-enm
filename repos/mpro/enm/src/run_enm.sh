@@ -6,7 +6,7 @@
 # DDPT must be installed and added to `PATH`
 
 if [ "$#" -ne 4 ]; then
-    echo "Usage: $0 <pdb-filepath> <work-dir> <output-dir> <GENENMM-flags>"
+    echo "Usage: $0 <work-dir> <output-dir> <pdb-filepath> <GENENMM-flags>"
     echo "Example: $0 "pdb/processed/1.pdb" "tmp/-ca-het-c8.0" "data/raw/-ca-het-c8.0" "-ca -het -c 8.0""
     exit 1
 fi
@@ -33,10 +33,6 @@ echo ${FORM_IDX} >> ${LOG_FILE}
 mkdir -p $OUTPUT_DIR $WORK_DIR 
 
 cp ${PDB_PATH} ${WORK_DIR}/structure.pdb
-
-# Copy auxilary files, if any are present,
-# for -mass -ca -res, -ccust, -spcust and -fcust flags. 
-cp -f misc/{resmass.dat,cutoff.radius,res.force,fix.springs} -t $WORK_DIR 2> /dev/null
 
 echo -n "Moving to working directory:"
 pushd $WORK_DIR
