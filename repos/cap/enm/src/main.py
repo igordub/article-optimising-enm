@@ -7,7 +7,7 @@
     Run the whole thing from the root directory 
     to replicate all the results:
     
-    $ pyhton src/main.py
+    $ python src/main.py
     or
     $ python -m src.main
 """
@@ -26,7 +26,12 @@ config = utils.read_config()
 
 # get_pdb.main()
 # simulate.main(dist_cutoff)
-clean_data.main()
-analyze.main(dist_cutoff)
-plot.main(dist_cutoff, protein_name)
+# clean_data.main()
 
+# clean_data.clean_dc()
+# analyze.analyze_dc(dist_cutoff)
+# plot.plot_dc(dist_cutoff, protein_name)
+
+clean_data.clean_benms()
+analyze.analyze_benms(dist_cutoff)
+plot.plot_benms(dist_cutoff, protein_name)
