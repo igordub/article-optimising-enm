@@ -11,6 +11,13 @@ from matplotlib import pyplot as plt
 
 import utilities as utils
 
+def select_df_list(df, lst):
+    """ Select dataframe colums based on list values.
+    """
+    
+    df_out = df[df.columns.intersection(lst)]
+    return df_out
+
 def cm_to_inch(cm_value):
     """ Convert cm to incehs.
     """
@@ -67,7 +74,7 @@ def load_data(input_dir):
                             index_col='residue_number')
 
     # BENM scan
-     # Eigenvalues
+    # Eigenvalues
     data_dic['eigvals_benm'] = {}
     for form_idx in range(3):
         data_dic['eigvals_benm'][form_idx] = pd.read_csv(
@@ -156,8 +163,7 @@ def lineplot_df(df, modes_plot=25, axis=None,
     return ax
 
 
-def hist_df(df, bins=range(0, 1000, 25), axis=None, 
-    colour_map=[], linestyle_wheel=plt.cycler("marker",['-'])):
+def hist_df(df, bins=range(0, 1000, 25), axis=None, alpha_list=[]):
     """ Plot histogram for Dataframe 
         and label columns.
     """
@@ -168,7 +174,7 @@ def hist_df(df, bins=range(0, 1000, 25), axis=None,
 
     for i, column in enumerate(df.columns):
         data = df[column]
-        if len(colour_map) == 0:
+        if len(alpha_list) == 0:
             hist_kwargs = dict(
                 histtype='step',
                 alpha=1,
@@ -178,19 +184,17 @@ def hist_df(df, bins=range(0, 1000, 25), axis=None,
         else:
             hist_kwargs = dict(
                 histtype='step',
-                alpha=1,
-                color = colour_map[i%len(colour_map)],
+                alpha=alpha_list[i],
                 density=False,
                 label=column,
-                bins=bins,
-                orientation='horizontal')
+                bins=bins)
 
         bin_vals, _, _ = ax.hist(data, **hist_kwargs)
 
     return ax
 
 
-def compare_to_md(eigvals_enm, eigvals_md, output_path, legend_kwargs=None):
+def compare_to_md(eigvals_enm, eigvals_md, output_path, legend_kwargs=None, alpha_lists=[[]]):
     """ Plots apo form eigenvalues for differnt ENMs
         and all-atom MD eigenvalues: scatter plot, line plot
         and histogram.
@@ -204,11 +208,11 @@ def compare_to_md(eigvals_enm, eigvals_md, output_path, legend_kwargs=None):
         constrained_layout=False,
         tight_layout=False)
 
-    
     for i, axs_row in enumerate(axs):
         for j, ax in enumerate(axs_row):
             df_enm = eigvals_enm[i]
             df_md =  eigvals_md[i]
+            alpha_list = alpha_lists[i]
 
             bin_width = 15
             bins = np.arange(0, df_md.max()+bin_width, bin_width)
@@ -264,7 +268,11 @@ def compare_to_md(eigvals_enm, eigvals_md, output_path, legend_kwargs=None):
 
             else:
                 # Density of states
-                _ = hist_df(df_enm, bins=bins, axis=ax)
+                # Choose certain columns
+                _ = hist_df(df_enm,
+                    bins=bins, 
+                    axis=ax,
+                    alpha_list=alpha_list)
 
                 hist_kwargs = dict(histtype='step',
                                 alpha=1,
@@ -284,10 +292,6 @@ def compare_to_md(eigvals_enm, eigvals_md, output_path, legend_kwargs=None):
                 ax.set_yticks(np.arange(0, y_max+50, 50))
                 ax.locator_params(axis="y", nbins=8)
 
-
-
-            # ax.autoscale_view()
-
     # Labels
     axs[1][-1].set_ylabel('# modes per bin')
     axs[-1][-1].set_xlabel('$\omega$ ($cm^{-1}$)')
@@ -301,8 +305,22 @@ def compare_to_md(eigvals_enm, eigvals_md, output_path, legend_kwargs=None):
 
     # Legend
     axs[-1][1].legend(**legend_kwargs)
+
+    # SUBPLOT LABELS
+    text_kwargs = dict(
+        ha='left', 
+        va='top', 
+        fontsize=18,
+        fontfamily='sans-serif',
+        fontweight='bold', 
+        color='black')
+
+    fig.text(0.0, 1, 'a', **text_kwargs)
+    fig.text(0.0, 0.71, 'b', **text_kwargs)
+    fig.text(0.0, 0.41, 'c', **text_kwargs)
     
-    plt.savefig(output_path)
+    for extension in ['tiff','pdf','eps','png']:
+        plt.savefig(output_path+'.'+extension)
     plt.close()
 
 
@@ -328,7 +346,7 @@ def choose_dc(chi2_data, bfactors_data, output_path, cb_colors, dc_lbls=[],legen
 
             # Plot
             if j == 0:
-                # Chi-square test restults
+                # Chi-square test results
                 _ = lineplot_df(chi2, modes_plot=25, axis=ax)
 
                 ax.set_xticks(np.arange(0, 26, 5))
@@ -356,7 +374,7 @@ def choose_dc(chi2_data, bfactors_data, output_path, cb_colors, dc_lbls=[],legen
                         color=color)
                     
                     ax.plot(residue_numbers,
-                                data, **scatter_kwargs)
+                                data, linewidth=1,**scatter_kwargs)
                 ax.locator_params(axis="y", nbins=5)
 
             ax.autoscale_view()
@@ -379,20 +397,36 @@ def choose_dc(chi2_data, bfactors_data, output_path, cb_colors, dc_lbls=[],legen
     plt.subplots_adjust(bottom=0.2)
 
     # Legend
-    axs[0][1].legend(['ENM', 'MD', 'X-ray'],
-        loc='upper left', 
+    axs[-1][-1].legend(['ENM', 'MD', 'X-ray'],
+        loc='upper center',
+        bbox_to_anchor=(0.5,-0.45), 
         fancybox=False, 
         shadow=False, 
-        ncol=1,
+        ncol=3,
         fontsize='medium',
-        handlelength=1)
+        handlelength=2)
 
     axs[-1][0].legend(**legend_kwargs)
-    
-    plt.savefig(output_path)
+
+
+
+    # SUBPLOT LABELS
+    text_kwargs = dict(
+        ha='left', 
+        va='top', 
+        fontsize=18,
+        fontfamily='sans-serif',
+        fontweight='bold', 
+        color='black')
+
+    fig.text(0.0, 1, 'a', **text_kwargs)
+    fig.text(0.0, 0.72, 'b', **text_kwargs)
+    fig.text(0.0, 0.43, 'c', **text_kwargs)
+    for extension in ['tiff','pdf','eps','png']:
+        plt.savefig(output_path+'.'+extension)
     plt.close()
 
-def plot_coop(coop_dc, coop_benm, dc_cm, benm_cm, output_path, lgnd_dc, lgnd_benm, dc_lbls=[]):
+def plot_coop(coop_dc, coop_benm, dc_cycler, benm_cycler, output_path, lgnd_dc, lgnd_benm, dc_lbls=[]):
     """ Plot allostery data.
     """
     subplot_width = 6.1 # cm
@@ -406,18 +440,26 @@ def plot_coop(coop_dc, coop_benm, dc_cm, benm_cm, output_path, lgnd_dc, lgnd_ben
         sharex=True,
         sharey=True)
 
-    
+    # SET CYCLER
     for i, axs_row in enumerate(axs):
         for j, ax in enumerate(axs_row):
-            # Plot
+            if j == 0:
+                # dc scan
+                axs[i][j].set_prop_cycle(dc_cycler)
+            elif j == 1:
+                # BENM scan
+                axs[i][j].set_prop_cycle(benm_cycler)
+    # PLOT
+    for i, axs_row in enumerate(axs):
+        for j, ax in enumerate(axs_row):
             if j == 0:
                 # dc scan
                 _ = lineplot_df(coop_dc[i], 
-                    modes_plot=25, 
-                    colour_map=dc_cm,
+                    modes_plot=100, 
                     axis=ax)
 
-                ax.set_xticks(np.arange(0, 26, 5))
+                
+                ax.set_xticks(np.arange(0, 101, 25))
                 ax.locator_params(axis="y", nbins=5)
 
                 # Non-cooperative value
@@ -429,11 +471,11 @@ def plot_coop(coop_dc, coop_benm, dc_cm, benm_cm, output_path, lgnd_dc, lgnd_ben
             elif j == 1:
                 # BENM scan
                 _ = lineplot_df(coop_benm[i],
-                    modes_plot=25, 
-                    colour_map=benm_cm,
+                    modes_plot=100, 
                     axis=ax)
 
-                ax.set_xticks(np.arange(0, 26, 5))
+                ax.set_prop_cycle(benm_cycler)
+                ax.set_xticks(np.arange(0, 101, 25))
                 ax.locator_params(axis="y", nbins=5)
 
                 # Non-cooperative value
@@ -445,7 +487,7 @@ def plot_coop(coop_dc, coop_benm, dc_cm, benm_cm, output_path, lgnd_dc, lgnd_ben
             ax.autoscale_view()
 
 
-    fig.supylabel('$K_2/K_1$')
+    fig.supylabel('$K_2/K_1$', x=0.03)
     fig.supxlabel('Modes', y=0.1, x=0.55)
 
     plt.tight_layout()
@@ -460,9 +502,30 @@ def plot_coop(coop_dc, coop_benm, dc_cm, benm_cm, output_path, lgnd_dc, lgnd_ben
 
     # Legend
     axs[-1][0].legend(**lgnd_dc)
+    axs[-1][0].text(0.5,-0.875, '$d_c$', fontsize=14,
+        va='bottom',
+        transform=axs[-1][0].transAxes)
     axs[-1][-1].legend(**lgnd_benm)
+    axs[-1][-1].text(0.5,-0.875, '$\epsilon$',fontsize=14,
+        va='bottom',
+        transform=axs[-1][-1].transAxes)
 
-    plt.savefig(output_path)
+    # Subplot labels
+    text_kwargs = dict(
+        ha='left', 
+        va='top', 
+        fontsize=18,
+        fontfamily='sans-serif',
+        fontweight='bold', 
+        color='black')
+
+    fig.text(0.0, 1, 'a', **text_kwargs)
+    fig.text(0.0, 0.725, 'b', **text_kwargs)
+    fig.text(0.0, 0.45, 'c', **text_kwargs)
+
+
+    for extension in ['tiff','pdf','eps','png']:
+        plt.savefig(output_path+'.'+extension)
     plt.close()
     #################
 
@@ -488,9 +551,11 @@ def plot():
         data['eigvals_md'][data['eigvals_md'] ['form_idx']==0]['eigval'] for data in data_list]
 
     # dc scan
-    dist_cutoffs = np.arange(7.5,15.5,0.5)
+    dist_cutoffs = np.arange(7.5,12.5,0.5)
+    dist_cutoffs_str = [str(elem) for elem in dist_cutoffs]
 
-    eigvals_dc_0 = [data['eigvals_dc_scaled'][0].iloc[:, :].drop(columns=['7.0'], errors='ignore')
+    # Select only cutoffs from 7.5 to 12.0 A
+    eigvals_dc_0 = [select_df_list(data['eigvals_dc_scaled'][0].iloc[:, :], dist_cutoffs_str)
         for data in data_list]
 
     chi2_data = [data['eigvals_dc_chi2'] for data in data_list]
@@ -498,69 +563,88 @@ def plot():
     chi2_data = [chi2[chi2['sort_type']=='scatter'].pivot(
         index='modes',
         columns='variable',
-        values='chi2').drop(columns=[7.0], errors='ignore') for chi2 in chi2_data]
+        values='chi2') for chi2 in chi2_data]
+
+    chi2_data = [select_df_list(data, dist_cutoffs) for data in chi2_data]
+
 
     bfactors_data = [data['bfactors'] for data in data_list]
 
 
-    coop_dc = [data['coop_dc'].drop(columns=['7.0'], errors='ignore') for data in data_list]
+    coop_dc = [select_df_list(data['coop_dc'].iloc[:, :], dist_cutoffs_str) for data in data_list]
     coop_benm = [data['coop_benm'].drop(columns=['250.0','300.0'], errors='ignore') for data in data_list]
+    
 
+    # Color map for distance scan
     # dc_cm = plt.cm.rainbow(np.linspace(0.0, 1, len(dist_cutoffs)))
     dc_cm = plt.cm.tab20(np.arange(len(dist_cutoffs)))
 
+    dc_cycler = (plt.cycler("color", dc_cm) +
+                  plt.cycler("linestyle", ['-', '--']*5))
+
     rc_params = {'axes.prop_cycle':
-            plt.cycler("color", dc_cm)}
+            dc_cycler}
 
+    alphas = np.ones(len(dist_cutoffs))
 
+    alpha_lists = [alphas,alphas,alphas]
+
+    # COMPARE TO MD
     with plt.rc_context(rc_params):
         legend_kwargs = dict(
             loc='upper center', 
-            bbox_to_anchor=(0.35,-0.4),
+            bbox_to_anchor=(0.35,-0.3),
             fancybox=False, 
             shadow=False, 
-            ncol=9,
-            fontsize='medium')
+            ncol=6,
+            fontsize='large')
         compare_to_md(eigvals_dc_0,
                     eigvals_md,
-                    join_paths(config['data']['outPathScratch'], 'dc_scan.png'),
-                    legend_kwargs=legend_kwargs)
+                    join_paths(config['data']['outPathScratch'], 'dc_scan'),
+                    legend_kwargs=legend_kwargs,
+                    alpha_lists=alpha_lists)
 
     # Choose distance cutoff
-    rc_params = {'axes.prop_cycle':plt.cycler("color", dc_cm),
+    rc_params = {'axes.prop_cycle':dc_cycler,
         'lines.linewidth': 1.5}
 
     dc_lbls = ["$d_c = {:.1f} \: \AA{{}}$".format(dc) for dc in [8,8.5,8.5]]
 
+    # CHOOSE DC
     with plt.rc_context(rc_params):
         lgnd_dc = dict(
             loc='upper center', 
-            bbox_to_anchor=(1,-0.45),
+            bbox_to_anchor=(0.5,-0.45),
             fancybox=False, 
             shadow=False, 
-            ncol=8,
+            ncol=5,
             fontsize='medium')
         choose_dc(chi2_data,
             bfactors_data,
-            join_paths(config['data']['outPathScratch'], 'choose_dc.png'),
+            join_paths(config['data']['outPathScratch'], 'choose_dc'),
             cb_colors,
             dc_lbls=dc_lbls,
             legend_kwargs=lgnd_dc)
 
     # BENM scan
-    back_coeffs = np.array([1,10,20,30,40,50,100,150,200])
+    back_coeffs = np.array([1,5,10,20,30,40,50,100,150,200])
     eigvals_benm_0 = [data['eigvals_benm_scaled'][0].iloc[:, :].drop(columns=['250.0','300.0'], errors='ignore')
         for data in data_list]
 
-
+    # BENM SCAN COLOURMAP
     cm_min = 0.3
-    cm_max = 0.8
+    cm_max = 1
     values_scaled = [cm_min + ((cm_max-cm_min)/(back_coeffs.max()-back_coeffs.min())) * (value - back_coeffs.min()) 
         for value in back_coeffs]
     values_scaled = np.array(values_scaled)
     benm_cm = plt.cm.Greys(values_scaled)
+    # benm_cm = plt.cm.turbo(np.arange(len(back_coeffs)))
+
+    benm_cycler = (plt.cycler("color", benm_cm) +
+                plt.cycler("linestyle", ['-', '--', ':','-', '--', ':','-', '--',':','-']))
+
     rc_params = {'axes.prop_cycle':
-            plt.cycler("color", benm_cm)}
+            benm_cycler}
     
     lgnd_benm = dict(
         loc='upper center', 
@@ -569,41 +653,50 @@ def plot():
         shadow=False, 
         mode=None, 
         ncol=6,
-        fontsize='medium')
+        fontsize='large')
+    
+    alphas = np.zeros(len(back_coeffs))
+    alpha_lists = [alphas.copy() for i in range(3)]
+    np.put(alpha_lists[0], [0,7,9], [1,1])
+    np.put(alpha_lists[1], [0,7,9], [1,1])
+    np.put(alpha_lists[2], [0,7,9], [1,1])
 
+
+
+    # COMPARE TO MD
     with plt.rc_context(rc_params):
         compare_to_md(eigvals_benm_0,
                     eigvals_md,
-                    join_paths(config['data']['outPathScratch'], 'benm_scan.png'),
-                    legend_kwargs = lgnd_benm)
+                    join_paths(config['data']['outPathScratch'], 'benm_scan'),
+                    legend_kwargs = lgnd_benm,
+                    alpha_lists=alpha_lists)
     
     # Cooperativity
     lgnd_dc = dict(
         loc='upper center', 
-        bbox_to_anchor=(0.35,-0.4),
+        bbox_to_anchor=(0.45,-0.4),
         fancybox=False, 
         shadow=False, 
-        ncol=6,
+        ncol=5,
         fontsize='small')
 
     lgnd_benm = dict(
         loc='upper center', 
-        bbox_to_anchor=(0.6,-0.4),
+        bbox_to_anchor=(0.5,-0.4),
         fancybox=False, 
         shadow=False, 
         mode=None, 
-        ncol=4,
+        ncol=5,
         fontsize='small') 
 
     plot_coop(coop_dc,
         coop_benm, 
-        dc_cm, 
-        benm_cm,
-        join_paths(config['data']['outPathScratch'], 'coop.png'),
+        dc_cycler, 
+        benm_cycler,
+        join_paths(config['data']['outPathScratch'], 'coop'),
         lgnd_dc, 
         lgnd_benm, 
         dc_lbls=dc_lbls)
-
 
     # Chi-square test
     # Make Latex table
@@ -624,12 +717,94 @@ def plot():
 
     return None
 
+def plot_stand_wave():
+    """ Plots qualitaive plots of sinusondal homogenous
+        and inhomogenous standing waves."""
+    config = utils.read_config()
+    plt.style.use(config['viz']['default'])
+
+    fig, (ax1) = plt.subplots(1,1, 
+        figsize=(cm_to_inch(6.1), cm_to_inch(3.05)),
+        constrained_layout=False,
+        tight_layout=True,
+        sharex=True,
+        sharey=True)
+
+
+    x = np.linspace(0, 2*np.pi, 400)
+    y1 = np.sin(x)
+    y2 = np.sin(x + x**2 / (0.5*np.pi))
+
+    # Constant wavelength
+    ax1.plot(x, y1, lw=1, zorder=-1)
+    # Varying wavelength
+    ax1.plot(x, y2, lw=1, zorder=-1)
+
+    # EN beads and springs
+    ax1.hlines(0, 0, 2*np.pi, color='black', lw=1, zorder=-1)
+    beads_xloc = np.linspace(0, 2, num=9) * np.pi
+    ax1.scatter(beads_xloc, np.zeros(len(beads_xloc)),
+        color='#aec7e8',
+        edgecolors='black',
+        s=50)
+
+    ax1.get_xaxis().set_ticks([])
+    ax1.get_yaxis().set_ticks([])
+
+    for ax in [ax1]:
+        for key in ['right', 'top', 'bottom', 'left']:
+            ax.spines[key].set_visible(False)
+
+    plt.xlim(-0.1*np.pi, 2.1*np.pi)
+
+    # Annotation
+    ax.annotate('EN bead', xy=(0, 0), xytext=(-0.1*np.pi, -0.5), size=6, 
+        ha="center", va="center",
+        arrowprops=dict(facecolor='black', 
+            arrowstyle="-|>",
+            connectionstyle="arc3"),
+        )
+    ax.annotate('EN spring', xy=(3/8 * np.pi,0.05), xytext=(2.5/8 * np.pi, -0.8), size=6, 
+        ha="center", va="bottom",
+        arrowprops=dict(facecolor='black', 
+            arrowstyle="-|>",
+            connectionstyle="arc3"),
+        )
+
+    ax.annotate('$\lambda_{fixed}$', 
+        xy=(0.5 * np.pi, 1), 
+        xytext=(0.55 * np.pi, 1),
+        color='#bc80bd', 
+        size=6, 
+        ha="center", 
+        va="bottom",
+        arrowprops=dict(facecolor='black', 
+            arrowstyle="-",
+            lw=0),
+        )
+
+    ax.annotate('$\lambda_{varying}$', 
+        xy=(1.5 * np.pi, 1), 
+        xytext=(1.55 * np.pi, 1), 
+        color='#fb8072',
+        size=6, 
+        ha="center", 
+        va="bottom",
+        arrowprops=dict(facecolor='black', 
+            arrowstyle="-",
+            lw=0),
+        )
+    for extension in ['tiff','pdf','eps','png']:
+        plt.savefig(join_paths(config['data']['outPathScratch'], 'stand_waves.' + extension))
+
+    return None
 
 
 def main():
     """ Master script.
     """
     plot()
+    plot_stand_wave()
 
 
 if __name__ == "__main__":
