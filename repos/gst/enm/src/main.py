@@ -26,7 +26,10 @@ config = utils.read_config()
 
 # get_pdb.main()
 # simulate.main(dist_cutoff)
-clean_data.main()
-analyze.main(dist_cutoff)
-plot.main(dist_cutoff, protein_name)
+# clean_data.main()
+# analyze.main(dist_cutoff)
+# plot.main(dist_cutoff, protein_name)
 
+clean_data.clean_benms()
+analyze.analyze_benms(dist_cutoff)
+plot.plot_benms(dist_cutoff, protein_name)
